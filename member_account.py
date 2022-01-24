@@ -1,4 +1,6 @@
 class State:
+    """Represents the state of a member account. Contains all valid states."""
+
     START, REGISTERED, ACTIVE, INACTIVE, DORMANT, END = "start", "registered", "active", "inactive", "dormant", "end"
 
     def __init__(self, name: str):
@@ -51,9 +53,19 @@ class _PossibleTransitions(list):
 
 
 class MemberAccount:
+    """MemberAccount represents an account of a club member.
+
+    After the member registers, the account must be confirmed to be active. When active, account information can be
+    changed by the member. A member can suspend her account and reactivate it. If the annual fee is due, the account
+    will be set inactive until the fee is paid by the member. A member can cancel the account to delete it.
+
+    All methods change the state of the account, but only valid transition are possible. If an invalid transition
+    is requested, methods will raise a RuntimeError. See _PossibleTransitions for all valid transitions.
+    """
     _possible_transitions = _PossibleTransitions()
 
     def __init__(self):
+        """Initializes the account to State START."""
         self.state = State.START
 
     def _transition(self, destination: State):
@@ -65,25 +77,33 @@ class MemberAccount:
         self.state = destination
 
     def register(self):
+        """Sets the state of the account to REGISTERED after a new member registered."""
         self._transition(State.REGISTERED)
 
     def confirm(self):
+        """Sets the state of the account to ACTIVE after the new member confirmed her mail address."""
         self._transition(State.ACTIVE)
 
     def change(self):
+        """Updates member information and sets the state of the account to ACTIVE."""
         self._transition(State.ACTIVE)
 
     def suspend(self):
+        """Sets the state of the account to DORMANT after the member suspended the account."""
         self._transition(State.DORMANT)
 
     def reactivate(self):
+        """Sets the state of the account back to ACTIVE after the member reactivated her account."""
         self._transition(State.ACTIVE)
 
     def fee_due(self):
+        """Sets the state of the account to INACTIVE because the annual fee is due."""
         self._transition(State.INACTIVE)
 
     def transfer(self):
-        self._transition(State.INACTIVE)
+        """Sets the state of the account back to ACTIVE after the member paid the annual fee."""
+        self._transition(State.ACTIVE)
 
     def cancel(self):
+        """Cancels the member account and sets the state of the account back to END."""
         self._transition(State.END)
