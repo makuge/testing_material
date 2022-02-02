@@ -1,4 +1,4 @@
-from StateMachine import State, Transition, Transitions, StateMachine
+from state_machine import State, Transition, Transitions, StateMachine
 
 
 class MemberAccount:
