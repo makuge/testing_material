@@ -9,7 +9,7 @@ class MemberAccount:
     will be set inactive until the fee is paid by the member. A member can cancel the account to delete it.
 
     All methods change the state of the account, but only valid transition are possible. If an invalid transition
-    is requested, methods will raise a RuntimeError. See _PossibleTransitions for all valid transitions.
+    is requested, methods will raise a RuntimeError. See _transitions for all valid transitions.
     """
 
     START = State.START
