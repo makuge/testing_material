@@ -1,35 +1,59 @@
+import pytest
 from member_account import MemberAccount
 
 
-def test_cancellation_of_account():
+# Arrange
+@pytest.fixture()
+def confirmed_account():
     account = MemberAccount()
     account.register()
     account.confirm()
-    account.cancel()
-    assert account.get_state() == MemberAccount.END
+    return account
 
 
-def test_change_of_active_account():
+def test_account_confirmation(confirmed_account):
+    # Assert
+    assert confirmed_account.get_state() == MemberAccount.ACTIVE
+
+
+def test_start_state():
+    # Arrange
+    account = MemberAccount()
+
+    # Assert
+    assert account.get_state() == MemberAccount.START
+
+
+def test_fail_when_cancelling_in_registered_state():
+    # Arrange
     account = MemberAccount()
     account.register()
-    account.confirm()
-    account.change()
-    assert account.get_state() == MemberAccount.ACTIVE
+
+    # Act
+    with pytest.raises(RuntimeError):
+        account.cancel()
 
 
-def test_annual_fee():
-    account = MemberAccount()
-    account.register()
-    account.confirm()
-    account.fee_due()
-    account.transfer()
-    assert account.get_state() == MemberAccount.ACTIVE
+def test_creation_and_cancellation(confirmed_account):
+    # Act
+    confirmed_account.cancel()
+
+    # Assert
+    assert confirmed_account.get_state() == MemberAccount.END
 
 
-def test_account_suspension():
-    account = MemberAccount()
-    account.register()
-    account.confirm()
-    account.suspend()
-    account.reactivate()
-    assert account.get_state() == MemberAccount.ACTIVE
+def test_creation_and_change(confirmed_account):
+    # Act
+    confirmed_account.change()
+
+    # Assert
+    assert confirmed_account.get_state() == MemberAccount.ACTIVE
+
+
+def test_inactivation_and_fee_transfer(confirmed_account):
+    # Act
+    confirmed_account.fee_due()
+    confirmed_account.transfer()
+
+    # Assert
+    assert confirmed_account.get_state() == MemberAccount.ACTIVE
