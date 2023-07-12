@@ -2,8 +2,8 @@ import decimal
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
 
-_EASTER_HOLIDAY_BEGIN = date(2022, 4, 9)
-_EASTER_HOLIDAY_END = date(2022, 4, 18)
+_WINTER_SEASON_BEGIN = date(2023, 11, 25)
+_WINTER_SEASON_END = date(2024, 1, 6)
 
 
 def _truncate(t: Decimal) -> Decimal:
@@ -13,8 +13,9 @@ def _truncate(t: Decimal) -> Decimal:
 def calculate_price(total: Decimal, day: date) -> Decimal:
     """Calculates the discounted price for the given total on the given day.
 
-    If the given day is during the chocolatey Easter holidays, that is, between the 9th and the 18th of April 2022,
-    a discount will be granted.
+    If the given day is during the chocolatey Winter season, that is, between the 25th of November 2023
+    and the 6th of January 2024, a discount will be granted.
+    :param:
     :return: The discounted total
     """
     if not isinstance(total, Decimal):
@@ -30,7 +31,7 @@ def calculate_price(total: Decimal, day: date) -> Decimal:
 
     discounted_total = _truncate(total)
 
-    if _EASTER_HOLIDAY_BEGIN <= day <= _EASTER_HOLIDAY_END:
+    if _WINTER_SEASON_BEGIN <= day <= _WINTER_SEASON_END:
         if total <= 50:
             discount = Decimal(0.95)
         elif total <= 100:
